@@ -1,9 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Aquí usamos las credenciales que pusimos en el docker-compose.yml
-# Estructura: postgresql://USUARIO:PASSWORD@HOST:PUERTO/DB_NAME
-DATABASE_URL = "postgresql://user_admin:secret_password@localhost:5432/prestamos_db"
+DATABASE_URL = "postgresql://user_admin:PCt7wo4!@localhost:5432/users_db"
 
 # El 'engine' es el encargado de la conexión física
 engine = create_engine(DATABASE_URL)
