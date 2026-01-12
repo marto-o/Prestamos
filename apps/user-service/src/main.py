@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from infrastructure.db.database import get_db
 from infrastructure.db.models import UserTable
 from infrastructure.auth.hash_handler import hash_password
+from infrastructure.auth.hash_handler import verify_password
+from infrastructure.auth.jwt_handler import create_access_token
 import schemas
 
 app = FastAPI()
@@ -47,3 +49,21 @@ def register_user(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     
     return {"message": "Usuario registrado exitosamente", "user_id": str(new_user.id)}
+
+@app.post("/login")
+def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
+    # 1. Buscar al usuario por email
+    user = db.query(UserTable).filter(UserTable.email == login_data.email).first()
+    
+    # 2. Verificar existencia y contraseña (usando el verificador de hash)
+    if not user or not verify_password(login_data.password, user.password):
+        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
+
+    # 3. Generar el token incluyendo el RUT y el ID del usuario
+    token = create_access_token(data={"sub": str(user.id), "rut": user.rut})
+    
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {"nombre": user.nombre, "apellido": user.apellido}
+    }
