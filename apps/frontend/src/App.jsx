@@ -1,14 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react' // Agregamos useEffect
+import Simulador from './components/Simulador';
 
-/**
- * Componente principal de la aplicación.
- * Gestiona los procesos de autenticación (Login) y creación de cuentas (Registro).
- */
 function App() {
-  // Estado booleano para alternar entre la vista de Login (true) y Registro (false)
   const [esLogin, setEsLogin] = useState(true);
   
-  // Objeto de estado único para capturar los datos del formulario de manera centralizada
+  // 1. Declaramos el estado del token (esto soluciona el error ReferenceError)
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  
   const [formData, setFormData] = useState({
     rut: '',
     nombre: '',
@@ -18,31 +16,28 @@ function App() {
     telefono: ''
   });
 
+  // 2. Sincronizamos el estado con el almacenamiento local al cargar la app
+  useEffect(() => {
+    const tokenGuardado = localStorage.getItem('token');
+    if (tokenGuardado) setToken(tokenGuardado);
+  }, []);
+
   /**
-   * Manejador genérico para actualizar el estado del formulario.
-   * Utiliza la propiedad 'name' de los inputs para mapear dinámicamente los valores.
-   * @param {Event} e - Evento de cambio del input.
+   * 3. Definimos handleLogout (necesaria para el botón del Header)
    */
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    alert("Sesión cerrada correctamente");
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  /**
-   * Procesa el envío del formulario al Backend.
-   * Realiza la petición asíncrona al servicio de usuarios y gestiona la persistencia del token.
-   * @param {Event} e - Evento de envío del formulario.
-   */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Determinar el endpoint basado en el modo actual del componente
     const endpoint = esLogin ? '/login' : '/register';
-
-    /**
-     * Optimización de carga útil (Payload):
-     * Para el login solo enviamos credenciales básicas.
-     * Para el registro enviamos el objeto formData completo.
-     */
     const dataToSend = esLogin 
       ? { email: formData.email, password: formData.password }
       : formData;
@@ -58,69 +53,69 @@ function App() {
 
       if (response.ok) {
         if (esLogin) {
-          /**
-           * Flujo de Éxito - Login:
-           * Almacenamos el JWT (JSON Web Token) en localStorage para mantener la sesión activa.
-           */
+          // 4. Actualizamos el estado aquí también para que la UI reaccione de inmediato
           localStorage.setItem('token', data.access_token);
+          setToken(data.access_token); 
           alert(`¡Bienvenido de nuevo, ${data.user.nombre}!`);
-          console.log("Sesión iniciada. JWT almacenado.");
         } else {
-          /**
-           * Flujo de Éxito - Registro:
-           * Notificamos al usuario y lo redirigimos automáticamente a la vista de login.
-           */
           alert("Registro exitoso. Ahora puedes iniciar sesión.");
           setEsLogin(true); 
         }
       } else {
-        // Manejo de errores controlados desde el Backend (Ej: RUT duplicado o credenciales inválidas)
         alert(data.detail || "Ocurrió un error en la validación");
       }
     } catch (error) {
-      // Manejo de errores de red o servidor caído
       alert("Error crítico: No se pudo establecer conexión con el servidor backend.");
     }
   };
 
   return (
-    <div style={{ padding: '40px', fontFamily: 'Arial' }}>
-      <h1>{esLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</h1>
-      
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: '350px' }}>
-        
-        {/* Renderizado condicional: Estos campos solo existen en el DOM durante el registro */}
-        {!esLogin && (
-          <>
-            <input name="rut" placeholder="RUT (ej: 12345678-9)" onChange={handleChange} required />
-            <input name="nombre" placeholder="Nombre" onChange={handleChange} required />
-            <input name="apellido" placeholder="Apellido" onChange={handleChange} required />
-          </>
+    <div style={{ padding: '20px' }}>
+      <header>
+        <h1>Sistema de Préstamos</h1>
+        {token ? (
+          <button onClick={handleLogout}>Cerrar Sesión</button>
+        ) : (
+          <button onClick={() => setEsLogin(!esLogin)}>
+            {esLogin ? 'Ir a Registro' : 'Ir a Login'}
+          </button>
         )}
+      </header>
 
-        {/* Campos de identidad básicos presentes en ambos flujos */}
-        <input name="email" type="email" placeholder="Correo electrónico" onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Contraseña" onChange={handleChange} required />
+      <hr />
 
-        {!esLogin && (
-          <input name="telefono" placeholder="Teléfono" onChange={handleChange} />
+      <section>
+        <h2>Simulador</h2>
+        <Simulador />
+      </section>
+
+      <hr />
+
+      <section>
+        {token ? (
+          <div>
+            <h2>Panel de Usuario</h2>
+            <p>Estado: Autenticado</p>
+            <button>Ver mis solicitudes</button>
+          </div>
+        ) : (
+          <div>
+            <h2>{esLogin ? 'Login' : 'Registro'}</h2>
+            <form onSubmit={handleSubmit}>
+              {!esLogin && (
+                <>
+                  <input name="rut" placeholder="RUT" onChange={handleChange} /><br />
+                  <input name="nombre" placeholder="Nombre" onChange={handleChange} /><br />
+                  <input name="apellido" placeholder="Apellido" onChange={handleChange} /><br />
+                </>
+              )}
+              <input name="email" type="email" placeholder="Email" onChange={handleChange} /><br />
+              <input name="password" type="password" placeholder="Password" onChange={handleChange} /><br />
+              <button type="submit">{esLogin ? 'Entrar' : 'Registrar'}</button>
+            </form>
+          </div>
         )}
-
-        <button type="submit" style={{ padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
-          {esLogin ? 'Entrar' : 'Registrarme'}
-        </button>
-      </form>
-
-      {/* Control de navegación entre estados de autenticación */}
-      <p style={{ marginTop: '20px' }}>
-        {esLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'} 
-        <button 
-          onClick={() => setEsLogin(!esLogin)} 
-          style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', textDecoration: 'underline' }}
-        >
-          {esLogin ? 'Regístrate aquí' : 'Inicia sesión aquí'}
-        </button>
-      </p>
+      </section>
     </div>
   );
 }
