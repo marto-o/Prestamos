@@ -1,12 +1,22 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-from infrastructure.db.database import get_db
+from fastapi.security import OAuth2PasswordBearer
+from passlib.context import CryptContext
+from infrastructure.db.database import get_db, engine
 from infrastructure.db.models import UserTable
 from infrastructure.auth.hash_handler import hash_password
 from infrastructure.auth.hash_handler import verify_password
 from infrastructure.auth.jwt_handler import create_access_token
+from infrastructure.db import models
 import schemas
+import jwt
+
+SECRET_KEY = "PCt7wo4!"
+ALGORITHM = "HS256"
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 app = FastAPI()
 
@@ -65,5 +75,45 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
     return {
         "access_token": token,
         "token_type": "bearer",
-        "user": {"nombre": user.nombre, "apellido": user.apellido}
+        "user": {"nombre": user.nombre, 
+                 "apellido": user.apellido,
+                 "email": user.email,
+                 "telefono": user.telefono
+        }
     }
+
+@app.put("/perfil")
+def actualizar_perfil(datos_nuevos: dict, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        # 1. Decodificar el token para obtener el ID del usuario (que guardamos como 'sub')
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+        
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Token inválido")
+            
+        # 2. Buscar al usuario usando UserTable y el ID del token
+        usuario = db.query(UserTable).filter(UserTable.id == user_id).first()
+        
+        if not usuario:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        # 3. Actualizar campos
+        if "telefono" in datos_nuevos:
+            usuario.telefono = datos_nuevos["telefono"]
+            
+        if "email" in datos_nuevos and datos_nuevos["email"] != usuario.email:
+            existe = db.query(UserTable).filter(UserTable.email == datos_nuevos["email"]).first()
+            if existe:
+                raise HTTPException(status_code=400, detail="El email ya está en uso")
+            usuario.email = datos_nuevos["email"]
+
+        if "password" in datos_nuevos and datos_nuevos["password"]:
+            # Usamos el hash_password que ya tienes importado arriba
+            usuario.password = hash_password(datos_nuevos["password"])
+
+        db.commit() 
+        return {"status": "success", "message": "Perfil actualizado correctamente"}
+
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token expirado o inválido")

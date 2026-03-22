@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: user_admin
       POSTGRES_PASSWORD: PCt7wo4!
-      POSTGRES_DB: users_db
+      POSTGRES_DB: users_db,loans_db
     ports:
       - "5432:5432"
     volumes:

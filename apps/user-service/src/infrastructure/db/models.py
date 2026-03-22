@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base
 
@@ -22,3 +22,4 @@ class UserTable(Base):
     password = Column(String(255), nullable=False) 
     email = Column(String(150), unique=True, nullable=False)
     telefono = Column(String(20), nullable=True)
+    verificado = Column(Boolean, default=False)

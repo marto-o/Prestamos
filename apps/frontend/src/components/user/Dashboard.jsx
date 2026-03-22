@@ -30,7 +30,16 @@ const Dashboard = ({ token, setVista }) => {
           Ir a Simulación de Prestamo
         </button>
       </div>
-      <h2>Mi Panel de Control</h2>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>Mi Panel de Control</h2>
+        <button 
+          onClick={() => setVista('perfil')}
+          style={{ padding: '8px 15px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+        >
+          Configurar Mi Cuenta
+        </button>
+      </div>
       
       {/* SECCIÓN DE SOLICITUDES */}
       <section style={{ marginBottom: '30px', border: '1px solid #ccc', padding: '15px' }}>
