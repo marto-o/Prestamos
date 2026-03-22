@@ -86,17 +86,31 @@ cd ../../apps/frontend
 npm install
 ```
 
-## 7. Inicializar tablas SQL (solo user-service)
+## 7. Inicializar tablas SQL
 
 El proyecto no incluye migraciones automáticas, por eso debes crear las tablas manualmente la primera vez.
 
+### 7.1. user-service
+
 ```bash
-cd ../../apps/user-service
+cd apps/user-service
 source .venv/bin/activate
 python - <<'PY'
 from src.infrastructure.db import models, database
 models.Base.metadata.create_all(bind=database.engine)
-print('Tablas creadas')
+print('Tablas de users_db creadas')
+PY
+```
+
+### 7.2. loan-service (opcional, para futuro uso)
+
+```bash
+cd apps/loan-service
+source .venv/bin/activate
+python - <<'PY'
+from src.infrastructure import models, database
+models.Base.metadata.create_all(bind=database.engine)
+print('Tablas de loans_db creadas')
 PY
 ```
 
