@@ -79,8 +79,6 @@ pip install --upgrade pip
 pip install fastapi uvicorn pydantic
 ```
 
-> Nota: `loan-service` tiene `infrastructure/database.py` apuntando a `loans_db`, pero en el código actual no se usa la DB en el endpoint `/simular`. Si decides usar base de datos para préstamos.
-
 ## 6. Dependencias frontend
 
 ```bash
