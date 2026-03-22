@@ -33,13 +33,7 @@ cd prestamos
 
 ## 4. Configurar la base de datos
 
-### 4.1. Crear volumen externo (requisito actual de docker-compose)
-
-```bash
-docker volume create user-service_postgres_data
-```
-
-### 4.2. Arrancar solo DB
+### 4.1. Arrancar DB (volumen se crea automáticamente)
 
 ```bash
 docker compose up -d
@@ -193,7 +187,7 @@ curl -X POST http://localhost:8001/simular \
 ## 12. Troubleshooting común
 
 - Si falla conexión a DB: verificar `docker compose ps` y credenciales.
-- Si `db` no arranca por volumen externo: eliminar volumen y re-crear (o cambiar a volumen no externo en `docker-compose`).
+- Si `db` no arranca: `docker compose down --volumes` y `docker compose up -d` para recrear.
 - Endpoint responde 404: revisar puertos y ruta en `uvicorn`.
 - 500 en `/perfil`: token JWT inválido/expirado.
 
