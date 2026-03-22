@@ -174,36 +174,28 @@ curl -X POST http://localhost:8001/simular \
   -d '{"monto":1000000,"cuotas":12}'
 ```
 
-## 10. Ajustes de entorno para producción
-
-- Reemplazar hardcode de credenciales y URLs por variables de entorno.
-- `apps/user-service/src/infrastructure/db/database.py`:
-  - `DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://user_admin:PCt7wo4!@localhost:5432/users_db')`
-- `apps/loan-service/src/infrastructure/database.py` (si se usa):
-  - `SQLALCHEMY_DATABASE_URL = os.getenv('LOAN_DATABASE_URL',...)`
-
-## 11. Esquema de microservicios y diseño
+## 10. Esquema de microservicios y diseño
 
 - Bounded context `user-service`: identidad/seguridad/usuarios.
 - Bounded context `loan-service`: cálculos financieros sin persistencia actual.
 - `frontend`: UI desacoplada consumiendo APIs.
 - `docker-compose.yml`: dependencia infra (`db`) con persistencia en volumen.
 
-### 11.1. Hexagonal y separación de capas
+### 10.1. Hexagonal y separación de capas
 
 - `infrastructure`: implementación concreta (base de datos, hashing, JWT, CORS).
 - `logic`/`domain`: reglas de negocio (`calculator`).
 - `schemas`: DTOs de entrada/salida (validación por Pydantic).
 - `main.py`: orquesta rutas y dependencias.
 
-## 12. Troubleshooting común
+## 11. Troubleshooting común
 
 - Si falla conexión a DB: verificar `docker compose ps` y credenciales.
 - Si `db` no arranca: `docker compose down --volumes` y `docker compose up -d` para recrear.
 - Endpoint responde 404: revisar puertos y ruta en `uvicorn`.
 - 500 en `/perfil`: token JWT inválido/expirado.
 
-## 13. Bulk commands para desarrollo rápido
+## 12. Bulk commands para desarrollo rápido
 
 ```bash
 # Desde la raíz
