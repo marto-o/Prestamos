@@ -6,11 +6,12 @@ services:
     environment:
       POSTGRES_USER: user_admin
       POSTGRES_PASSWORD: PCt7wo4!
-      POSTGRES_DB: users_db,loans_db
+      POSTGRES_DB: users_db
     ports:
       - "5432:5432"
     volumes:
       - user-service_postgres_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
 
 volumes:
   user-service_postgres_data:
