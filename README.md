@@ -181,7 +181,7 @@ curl -X POST http://localhost:8001/simular \
 - `frontend`: UI desacoplada consumiendo APIs.
 - `docker-compose.yml`: dependencia infra (`db`) con persistencia en volumen.
 
-### 10.1. Hexagonal y separación de capas
+### 10.1. Separación de capas
 
 - `infrastructure`: implementación concreta (base de datos, hashing, JWT, CORS).
 - `logic`/`domain`: reglas de negocio (`calculator`).
