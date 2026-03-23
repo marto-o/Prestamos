@@ -1,6 +1,10 @@
+import uuid
 from sqlalchemy import Column, String, Integer, Date, DateTime, BigInteger
-from database import Base
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import declarative_base
 from datetime import datetime
+
+Base = declarative_base()
 
 class Solicitud(Base):
     __tablename__ = "solicitud"
