@@ -66,7 +66,7 @@ python -m venv .venv
 source .venv/bin/activate   # WSL/macOS
 # .venv\Scripts\activate  # Windows PowerShell
 pip install --upgrade pip
-pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic passlib[bcrypt] python-jose
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic passlib[bcrypt] python-jose pyjwt
 ```
 
 ### 5.2. loan-service
@@ -76,7 +76,7 @@ cd ../../apps/loan-service
 python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install fastapi uvicorn pydantic
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic passlib[bcrypt] python-jose pyjwt
 ```
 
 ## 6. Dependencias frontend
