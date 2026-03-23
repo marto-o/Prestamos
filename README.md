@@ -33,7 +33,7 @@ cd prestamos
 
 ## 4. Configurar la base de datos
 
-### 4.1. Arrancar DB (volumen se crea automáticamente)
+### 4.1. Arrancar DB (crea automáticamente users_db y loans_db)
 
 ```bash
 docker compose up -d
@@ -41,7 +41,7 @@ docker compose up -d
 
 - Usuario: `user_admin`
 - Password: `PCt7wo4!`
-- Bases: `users_db` y `loans_db`.
+- Bases: `users_db` (creada por defecto) y `loans_db` (creada por script SQL en `db-init/`).
 - Puerto: `5432:5432`
 
 ### 4.3. Verificar contenedor
@@ -102,7 +102,7 @@ print('Tablas de users_db creadas')
 PY
 ```
 
-### 7.2. loan-service (opcional, para futuro uso)
+### 7.2. loan-service (opcional, loans_db se crea automáticamente por script SQL)
 
 ```bash
 cd apps/loan-service
