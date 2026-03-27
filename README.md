@@ -66,7 +66,7 @@ python -m venv .venv
 source .venv/bin/activate   # WSL/macOS
 # .venv\Scripts\activate  # Windows PowerShell
 pip install --upgrade pip
-pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic passlib[bcrypt] python-jose pyjwt
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic passlib[bcrypt] python-jose pyjwt pydantic[email]
 ```
 
 ### 5.2. loan-service
@@ -102,7 +102,7 @@ print('Tablas de users_db creadas')
 PY
 ```
 
-### 7.2. loan-service (opcional, loans_db se crea automáticamente por script SQL)
+### 7.2. loan-service (loans_db se crea automáticamente por script SQL)
 
 ```bash
 cd apps/loan-service
@@ -121,7 +121,8 @@ PY
 ```bash
 cd apps/user-service
 source .venv/bin/activate
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+cd src/
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 - Docs interactivos: `http://localhost:8000/docs`
@@ -132,7 +133,8 @@ uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```bash
 cd apps/loan-service
 source .venv/bin/activate
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8001
+cd src/
+uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
 
 - Docs: `http://localhost:8001/docs`
