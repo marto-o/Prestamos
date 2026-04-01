@@ -11,7 +11,7 @@ Proyecto fintech de gestión de préstamos (consumo) con arquitectura en microse
 
 Diseño clave:
 - Microservicios independientes, cada uno en su directorio y puerto.
-- Infraestructura + dominio separados (arquitectura hexagonal, por capas).
+- Infraestructura + dominio separados
 - CORS configurado para `http://localhost:5173`.
 
 ## 2. Requisitos previos
