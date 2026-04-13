@@ -11,7 +11,7 @@ Proyecto fintech de gestión de préstamos (consumo) con arquitectura en microse
 
 Diseño clave:
 - Microservicios independientes, cada uno en su directorio y puerto.
-- Infraestructura + dominio separados (arquitectura hexagonal, por capas).
+- Infraestructura + dominio separados
 - CORS configurado para `http://localhost:5173`.
 
 ## 2. Requisitos previos
@@ -66,7 +66,7 @@ python -m venv .venv
 source .venv/bin/activate   # WSL/macOS
 # .venv\Scripts\activate  # Windows PowerShell
 pip install --upgrade pip
-pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic passlib[bcrypt] python-jose pyjwt
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic passlib[bcrypt] python-jose pyjwt pydantic[email]
 ```
 
 ### 5.2. loan-service
@@ -102,7 +102,7 @@ print('Tablas de users_db creadas')
 PY
 ```
 
-### 7.2. loan-service (opcional, loans_db se crea automáticamente por script SQL)
+### 7.2. loan-service (loans_db se crea automáticamente por script SQL)
 
 ```bash
 cd apps/loan-service
@@ -121,7 +121,8 @@ PY
 ```bash
 cd apps/user-service
 source .venv/bin/activate
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+cd src/
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 - Docs interactivos: `http://localhost:8000/docs`
@@ -132,7 +133,8 @@ uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```bash
 cd apps/loan-service
 source .venv/bin/activate
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8001
+cd src/
+uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
 
 - Docs: `http://localhost:8001/docs`
@@ -181,7 +183,7 @@ curl -X POST http://localhost:8001/simular \
 - `frontend`: UI desacoplada consumiendo APIs.
 - `docker-compose.yml`: dependencia infra (`db`) con persistencia en volumen.
 
-### 10.1. Hexagonal y separación de capas
+### 10.1. Separación de capas
 
 - `infrastructure`: implementación concreta (base de datos, hashing, JWT, CORS).
 - `logic`/`domain`: reglas de negocio (`calculator`).

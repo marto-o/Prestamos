@@ -12,7 +12,6 @@ Este es el repositorio del Grupo 06, cuyos integrantes son:
 * **Tutor**: Alicia Pereira
 
 ## Wiki
-=======
 
 > Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/grupo054/GRUPO05-2025-PROYINF/-/wikis/home)
 
@@ -25,5 +24,3 @@ Este es el repositorio del Grupo 06, cuyos integrantes son:
 ## Proyecto
 
 > Acceso al proyecto mediante el siguiente [enlace](https://gitlab.com/grupo054/GRUPO05-2025-PROYINF/-/blob/main/Proyecto/README.md?ref_type=heads). En dicho enlace se podrá encontrar información acerca de especificaciones técnicas, requisitos del sistema e indicaciones para levantar el proyecto.
-=======
-
